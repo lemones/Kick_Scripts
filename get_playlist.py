@@ -27,8 +27,5 @@ try:
 
 except Exception as e:
     print(e)
-#    exit()
+    exit()
 
-request = httpx.Client()
-response = request.get(url, headers=headers)
-print(response)
