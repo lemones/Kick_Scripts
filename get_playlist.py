@@ -14,11 +14,7 @@ get_args.add_argument("-s", "--streamer", required=True)
 args = get_args.parse_args()
 
 url = f"https://Kick.com/api/v1/channels/{args.streamer}"
-user_agent= "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
-headers = {
-	'Host': 'kick.com',
-	'User-Agent': user_agent
-}
+headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:108.0) Gecko/20100101 Firefox/108.0', 'Host': 'kick.com'}
 
 try:
     request = httpx.Client()
@@ -26,6 +22,14 @@ try:
     print(f"{response['playback_url']}") if response['livestream'] != None else exit()
 
 except Exception as e:
-    print(e)
-    exit()
-
+    # If not working with httpx, use cloudscraper.
+    # This is bad practice! But works...
+    try:
+        import cloudscraper
+        scraper = cloudscraper.create_scraper()
+        r = scraper.get(url).text 
+        y = json.loads(r)
+        print(f"{y['playback_url']}") if y['livestream'] != None else exit()
+    except Exception as e:
+        print(e)
+    #exit()
